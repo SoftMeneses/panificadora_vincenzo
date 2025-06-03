@@ -1,4 +1,4 @@
-from conexion import obtener_conexion
+from models.conexion import obtener_conexion
 from mysql.connector import Error
 
 class InsumoModelo:
