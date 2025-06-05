@@ -8,7 +8,7 @@ class PanInsumoModelo:
     def obtener_panes_insumos(self):
 
         cursor = self.conexion.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM panes_insumos")
+        cursor.execute("SELECT id_registro,descr_pan AS id_pan,descr AS id_insumo,cant_insumo,descr_und AS id_und_med FROM panes_insumos INNER JOIN panes ON panes_insumos.ID_PAN = PANES.id_pan INNER JOIN INSUMOS ON insumos.id_insumo = panes_insumos.id_insumo INNER JOIN unidades ON unidades.id_und_med = panes_insumos.id_und_med")
         panes_insumos = cursor.fetchall()
         cursor.close()
         return panes_insumos
