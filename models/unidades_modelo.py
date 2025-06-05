@@ -1,4 +1,4 @@
-from conexion import obtener_conexion
+from models.conexion import obtener_conexion
 from mysql.connector import Error
 
 class UnidadModelo:
@@ -11,31 +11,54 @@ class UnidadModelo:
         unidades = cursor.fetchall()
         cursor.close()
         return unidades
-    
-    def insertar_unidad(self, descr_und):
+
+    def obtener_siguiente_id(self):
+        try:
+            
+            cursor = self.conexion.cursor()
+            cursor.execute("SELECT MAX(id_und_med) as max_id FROM unidades")
+            resultado = cursor.fetchone()
+            cursor.close()
+            max_id = resultado[0] if resultado[0] is not None else 0
+            return max_id + 1
+        except Error as e:
+            print(f"Error al obtener el siguiente ID: {e}")
+            return None
+
+    def insertar_unidad(self, id_unidad, descr_und):
         try:
             cursor = self.conexion.cursor()
-            sql = "INSERT INTO unidades (descr_und) VALUES(%s)"
-            cursor.execute(sql, (descr_und,))
+            sql = "INSERT INTO unidades (id_und_med, descr_und) VALUES(%s,%s)"
+            cursor.execute(sql, (id_unidad, descr_und))
             self.conexion.commit()
             cursor.close()
             return cursor.lastrowid
         except Error as e:
-            return e
-        
+            print(f"Error al insertar unidad: {e}")
+            return None
+
     def actualizar_unidad(self, id_und_med, descr_und):
-        cursor = self.conexion.cursor()
-        sql = "UPDATE unidades SET descr_und = %s WHERE id_und_med = %s"
-        cursor.execute(sql, (descr_und, id_und_med))
-        self.conexion.commit()
-        cursor.close()
-        return cursor.rowcount
-    
+        try:
+            cursor = self.conexion.cursor()
+            sql = "UPDATE unidades SET descr_und = %s WHERE id_und_med = %s"
+            cursor.execute(sql, (descr_und, id_und_med))
+            self.conexion.commit()
+            filas_afectadas = cursor.rowcount
+            cursor.close()
+            return filas_afectadas
+        except Error as e:
+            print(f"Error al actualizar unidad: {e}")
+            return 0
+
     def eliminar_unidad(self, id_und_med):
-        cursor = self.conexion.cursor()
-        sql = "DELETE FROM unidades WHERE id_und_med = %s"
-        cursor.execute(sql, (id_und_med,))
-        self.conexion.commit()
-        cursor.close()
-        return cursor.rowcount
-    
+        try:
+            cursor = self.conexion.cursor()
+            sql = "DELETE FROM unidades WHERE id_und_med = %s"
+            cursor.execute(sql, (id_und_med,))
+            self.conexion.commit()
+            filas_afectadas = cursor.rowcount
+            cursor.close()
+            return filas_afectadas
+        except Error as e:
+            print(f"Error al eliminar unidad: {e}")
+            return 0
