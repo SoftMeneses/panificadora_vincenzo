@@ -8,38 +8,38 @@ class PanInsumoModelo:
     def obtener_panes_insumos(self):
 
         cursor = self.conexion.cursor(dictionary=True)
-        cursor.execute("SELECT id_registro,descr_pan AS id_pan,descr AS id_insumo,cant_insumo,descr_und AS id_und_med FROM panes_insumos INNER JOIN panes ON panes_insumos.ID_PAN = PANES.id_pan INNER JOIN INSUMOS ON insumos.id_insumo = panes_insumos.id_insumo INNER JOIN unidades ON unidades.id_und_med = panes_insumos.id_und_med")
+        cursor.execute("SELECT id_panins, des_pan AS id_pan, des_ins AS id_ins, can_ins, des_uni AS id_uni FROM panes_insumos INNER JOIN panes ON panes_insumos.ID_PAN = PANES.id_pan INNER JOIN INSUMOS ON insumos.id_ins = panes_insumos.id_ins INNER JOIN unidades ON unidades.id_uni = panes_insumos.id_uni")
         panes_insumos = cursor.fetchall()
         cursor.close()
         return panes_insumos
     
-    def insertar_pan_insumo(self, id_pan, id_insumo, cant_insumo, id_und_med):
+    def insertar_pan_insumo(self, id_pan, id_ins, can_ins, id_uni):
     
         try:
             cursor = self.conexion.cursor()
-            sql = "INSERT INTO panes_insumos (id_pan, id_insumo, cant_insumo, id_und_med) VALUES(%s, %s, %s, %s)"
-            cursor.execute(sql, (id_pan, id_insumo, cant_insumo, id_und_med))
+            sql = "INSERT INTO panes_insumos (id_pan, id_ins, can_ins, id_uni) VALUES(%s, %s, %s, %s)"
+            cursor.execute(sql, (id_pan, id_ins, can_ins, id_uni))
             self.conexion.commit()
             cursor.close()
             return cursor.lastrowid 
         except Error as e:
             return str(e)  
         
-    def actualizar_pan_insumo(self, id_registro, id_pan, id_insumo, cant_insumo, id_und_med):
+    def actualizar_pan_insumo(self, id_panins, id_pan, id_ins, can_ins, id_uni):
        
         cursor = self.conexion.cursor()
-        sql = "UPDATE panes_insumos SET id_pan = %s, id_insumo = %s, cant_insumo = %s, id_und_med = %s WHERE id_registro = %s"
-        cursor.execute(sql, (id_pan, id_insumo, cant_insumo, id_und_med, id_registro))
+        sql = "UPDATE panes_insumos SET id_pan = %s, id_ins = %s, can_ins = %s, id_uni = %s WHERE id_panins = %s"
+        cursor.execute(sql, (id_pan, id_ins, can_ins, id_uni, id_panins))
         self.conexion.commit()
         filas_afectadas = cursor.rowcount 
         cursor.close()
         return filas_afectadas  
 
-    def eliminar_pan_insumo(self, id_registro):
+    def eliminar_pan_insumo(self, id_panins):
       
         cursor = self.conexion.cursor()
-        sql = "DELETE FROM panes_insumos WHERE id_registro = %s"
-        cursor.execute(sql, (id_registro,))
+        sql = "DELETE FROM panes_insumos WHERE id_panins = %s"
+        cursor.execute(sql, (id_panins,))
         self.conexion.commit()
         filas_afectadas = cursor.rowcount
         cursor.close()
@@ -49,7 +49,7 @@ class PanInsumoModelo:
     def obtener_panes(self):
 
         cursor = self.conexion.cursor(dictionary=True)
-        cursor.execute("SELECT id_pan, descr_pan FROM panes")  
+        cursor.execute("SELECT id_pan, des_pan FROM panes")  
         panes = cursor.fetchall()
         cursor.close()
         return panes
@@ -57,14 +57,14 @@ class PanInsumoModelo:
     def obtener_insumos(self):
 
         cursor = self.conexion.cursor(dictionary=True)
-        cursor.execute("SELECT id_insumo, descr FROM insumos")  
+        cursor.execute("SELECT id_ins, des_ins FROM insumos")  
         insumos = cursor.fetchall()
         cursor.close()
         return insumos
 
     def obtener_unidades(self):
         cursor = self.conexion.cursor(dictionary=True)
-        cursor.execute("SELECT id_und_med, descr_und FROM unidades") 
+        cursor.execute("SELECT id_uni, des_uni FROM unidades") 
         unidades = cursor.fetchall()
         cursor.close()
         return unidades

@@ -16,7 +16,7 @@ class UnidadModelo:
         try:
             
             cursor = self.conexion.cursor()
-            cursor.execute("SELECT MAX(id_und_med) as max_id FROM unidades")
+            cursor.execute("SELECT MAX(id_uni) as max_id FROM unidades")
             resultado = cursor.fetchone()
             cursor.close()
             max_id = resultado[0] if resultado[0] is not None else 0
@@ -25,11 +25,11 @@ class UnidadModelo:
             print(f"Error al obtener el siguiente ID: {e}")
             return None
 
-    def insertar_unidad(self, id_unidad, descr_und):
+    def insertar_unidad(self, id_uni, des_uni):
         try:
             cursor = self.conexion.cursor()
-            sql = "INSERT INTO unidades (id_und_med, descr_und) VALUES(%s,%s)"
-            cursor.execute(sql, (id_unidad, descr_und))
+            sql = "INSERT INTO unidades (id_uni, des_uni) VALUES(%s,%s)"
+            cursor.execute(sql, (id_uni, des_uni))
             self.conexion.commit()
             cursor.close()
             return cursor.lastrowid
@@ -37,11 +37,11 @@ class UnidadModelo:
             print(f"Error al insertar unidad: {e}")
             return None
 
-    def actualizar_unidad(self, id_und_med, descr_und):
+    def actualizar_unidad(self, id_uni, des_uni):
         try:
             cursor = self.conexion.cursor()
-            sql = "UPDATE unidades SET descr_und = %s WHERE id_und_med = %s"
-            cursor.execute(sql, (descr_und, id_und_med))
+            sql = "UPDATE unidades SET des_uni = %s WHERE id_uni = %s"
+            cursor.execute(sql, (des_uni, id_uni))
             self.conexion.commit()
             filas_afectadas = cursor.rowcount
             cursor.close()
@@ -50,11 +50,11 @@ class UnidadModelo:
             print(f"Error al actualizar unidad: {e}")
             return 0
 
-    def eliminar_unidad(self, id_und_med):
+    def eliminar_unidad(self, id_uni):
         try:
             cursor = self.conexion.cursor()
-            sql = "DELETE FROM unidades WHERE id_und_med = %s"
-            cursor.execute(sql, (id_und_med,))
+            sql = "DELETE FROM unidades WHERE id_uni = %s"
+            cursor.execute(sql, (id_uni,))
             self.conexion.commit()
             filas_afectadas = cursor.rowcount
             cursor.close()

@@ -7,7 +7,7 @@ class InsumoModelo:
 
     def obtener_insumos(self):
         cursor = self.conexion.cursor(dictionary=True)
-        cursor.execute("SELECT id_insumo, descr , descr_und AS id_und_med, exist_min, exist_max, stock FROM insumos INNER JOIN unidades ON insumos.id_und_med = unidades.id_und_med ")
+        cursor.execute("SELECT id_ins, des_ins, des_uni AS id_uni, exi_min, exi_max, can_disp FROM insumos INNER JOIN unidades ON insumos.id_uni = unidades.id_uni ")
         insumos = cursor.fetchall()
         cursor.close()
         return insumos
@@ -15,7 +15,7 @@ class InsumoModelo:
     def obtener_siguiente_id(self):
         try:
             cursor = self.conexion.cursor()
-            cursor.execute("SELECT MAX(id_insumo) as max_id FROM insumos")
+            cursor.execute("SELECT MAX(id_ins) as max_id FROM insumos")
             resultado = cursor.fetchone()
             cursor.close()
             max_id = resultado[0] if resultado[0] is not None else 0
@@ -24,11 +24,11 @@ class InsumoModelo:
             print(f"Error al obtener el siguiente ID de insumo: {e}")
             return None
 
-    def insertar_insumo(self, id_insumo,descr, id_und_med, exist_min, exist_max, stock):
+    def insertar_insumo(self, id_ins, des_ins, id_uni, exi_min, exi_max, can_disp):
         try:
             cursor = self.conexion.cursor()
-            sql = "INSERT INTO insumos (id_insumo,descr, id_und_med, exist_min, exist_max, stock) VALUES(%s,%s, %s, %s, %s, %s)"
-            cursor.execute(sql, (id_insumo,descr, id_und_med, exist_min, exist_max, stock))
+            sql = "INSERT INTO insumos (id_ins, des_ins, id_uni, exi_min, exi_max, can_disp) VALUES(%s,%s, %s, %s, %s, %s)"
+            cursor.execute(sql, (id_ins, des_ins, id_uni, exi_min, exi_max, can_disp))
             self.conexion.commit()
             cursor.close()
             return cursor.lastrowid
@@ -36,11 +36,11 @@ class InsumoModelo:
             print(f"Error al insertar insumo: {e}")
             return None
     
-    def actualizar_insumo(self, id_insumo, descr, id_und_med, exist_min, exist_max, stock):
+    def actualizar_insumo(self, id_ins, des_ins, id_uni, exi_min, exi_max, can_disp):
         try:
             cursor = self.conexion.cursor()
-            sql = "UPDATE insumos SET descr = %s, id_und_med = %s, exist_min = %s, exist_max = %s, stock = %s WHERE id_insumo = %s"
-            cursor.execute(sql, (descr, id_und_med, exist_min, exist_max, stock, id_insumo))
+            sql = "UPDATE insumos SET des_ins = %s, id_uni = %s, exi_min = %s, exi_max = %s, can_disp = %s WHERE id_ins = %s"
+            cursor.execute(sql, (des_ins, id_uni, exi_min, exi_max, can_disp, id_ins))
             self.conexion.commit()
             filas_afectadas = cursor.rowcount
             cursor.close()
@@ -49,11 +49,11 @@ class InsumoModelo:
             print(f"Error al actualizar insumo: {e}")
             return 0
     
-    def eliminar_insumo(self, id_insumo):
+    def eliminar_insumo(self, id_ins):
         try:
             cursor = self.conexion.cursor()
-            sql = "DELETE FROM insumos WHERE id_insumo = %s"
-            cursor.execute(sql, (id_insumo,))
+            sql = "DELETE FROM insumos WHERE id_ins = %s"
+            cursor.execute(sql, (id_ins,))
             self.conexion.commit()
             filas_afectadas = cursor.rowcount
             cursor.close()
@@ -65,7 +65,7 @@ class InsumoModelo:
     def obtener_unidades(self):
         try:
             cursor = self.conexion.cursor(dictionary=True)
-            cursor.execute("SELECT id_und_med, descr_und FROM unidades") 
+            cursor.execute("SELECT id_uni, des_uni FROM unidades") 
             unidades = cursor.fetchall()
             cursor.close()
             return unidades

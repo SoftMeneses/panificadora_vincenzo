@@ -1,4 +1,4 @@
-from models.panes_modelo import PanModelo
+from models.panes_model import PanModelo
 
 class PanControlador:
     def __init__(self, vista):
@@ -12,8 +12,8 @@ class PanControlador:
     def obtener_siguiente_id_pan(self):
         return self.modelo.obtener_siguiente_id()  
 
-    def agregar_pan(self, id_pan, descr_pan):
-            nuevo_id = self.modelo.insertar_pan(id_pan, descr_pan)
+    def agregar_pan(self, id_pan, des_pan):
+            nuevo_id = self.modelo.insertar_pan(id_pan, des_pan)
             if isinstance(nuevo_id, int):
                 print(f"Pan agregado con ID: {nuevo_id}")
                 return True, None
@@ -21,9 +21,9 @@ class PanControlador:
                 print(f"Error al agregar pan: {nuevo_id}")
                 return False, nuevo_id
 
-    def actualizar_pan(self, id_pan, descr_pan):
+    def actualizar_pan(self, id_pan, des_pan):
         try:
-            filas_afectadas = self.modelo.actualizar_pan(id_pan, descr_pan)
+            filas_afectadas = self.modelo.actualizar_pan(id_pan, des_pan)
             print(f"Filas afectadas al actualizar: {filas_afectadas}")
             
             if filas_afectadas >= 0:

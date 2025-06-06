@@ -1,8 +1,8 @@
 import tkinter as tk
-from views.insumos_views import InsumosView
-from views.panes_views import PanesView
-from views.panesInsumos_views import PanesInsumosView
-from views.unidades_views import UnidadesView
+from views.insumos_view import InsumosView
+from views.panes_view import PanesView
+from views.panesInsumos_view import PanesInsumosView
+from views.unidades_view import UnidadesView
 from controllers.unidades_controller import UnidadControlador 
 from controllers.insumos_controller import InsumoControlador 
 from controllers.panes_insumos_controller import PanesInsumosControlador  
@@ -27,7 +27,7 @@ class MainApp:
         self.main_paned.add(self.content_frame)
 
         self.create_sidebar()
-        self.load_view("insumos")
+        # self.load_view("insumos") TODO descomentar para cargar la vista insumos por defecto...
 
     def create_sidebar(self):
         tk.Label(self.sidebar, text="🍞 Menú Principal", bg="#8B4A1A", fg="#EDE0D4", font=("Arial", 18, "bold"), pady=15).pack(fill=tk.X, pady=(0, 20))
@@ -37,7 +37,6 @@ class MainApp:
             ("🥄 Unidades", lambda: self.load_view("unidades")),
             ("🥐 Panes", lambda: self.load_view("panes")),
             ("🡢 Panes Insumos", lambda: self.load_view("panesinsumos")),
-            ("❌ Salir", self.root.quit)
         ]
 
         for text, command in buttons:
@@ -45,6 +44,11 @@ class MainApp:
                       bg="#6C3915", fg="#EDE0D4", activebackground="#B56A3A",
                       font=("Segoe UI Emoji", 14), anchor="w", padx=20, pady=10,
                       relief=tk.FLAT, bd=0).pack(fill=tk.X, pady=5)
+            
+        tk.Button(self.sidebar, text="❌ Salir", command=self.root.quit,
+              bg="#6C3915", fg="#EDE0D4", activebackground="#B56A3A",
+              font=("Segoe UI Emoji", 14), anchor="w", padx=20, pady=10,
+              relief=tk.FLAT, bd=0).pack(side=tk.BOTTOM, fill=tk.X, pady=10)
 
     def load_view(self, view_name):
         for widget in self.content_frame.winfo_children():

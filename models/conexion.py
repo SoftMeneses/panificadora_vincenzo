@@ -6,7 +6,7 @@ def obtener_conexion():
         conexion = mysql.connector.connect(
             host = "localhost",
             user = "root",
-            passwd = "",
+            passwd = "mysql",
             db = "panificadora",
             port = 3306
         )
