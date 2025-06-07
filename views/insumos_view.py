@@ -176,12 +176,68 @@ class InsumosView(tk.Frame):
         exi_max = self.entries["Existencia Máxima"].get()
         can_disp = self.entries["Cantidad Disponible"].get()
 
+        # Validación del campo ID Insumo
+        if not id_ins.strip():
+            messagebox.showerror("Error", "El ID de insumo no puede estar vacío.")
+            return
+        if not id_ins.isdigit():
+            messagebox.showerror("Error", "El ID de insumo debe ser un número entero positivo.")
+            return
+        id_ins_int = int(id_ins)
+        if not (0 <= id_ins_int <= 4294967295):
+            messagebox.showerror("Error", "El ID de insumo debe estar entre 0 y 4294967295.")
+            return
+
+        # Validación del campo Descripcion
+        if not des_ins.strip():
+            messagebox.showerror("Error", "La descripción no puede estar vacía.")
+            return
+        if not all(c.isalpha() or c.isspace() for c in des_ins):
+            messagebox.showerror("Error", "La descripción debe contener solo letras y espacios.")
+            return
+        if len(des_ins) > 50:
+            messagebox.showerror("Error", "La descripción no debe exceder los 50 caracteres.")
+            return
+
+        # Validación del campo Unidad de Medida
         if id_uni is None:
             messagebox.showerror("Error", "Seleccione una Unidad de Medida válida.")
             return
+        
+        # Validación del campo Existencia Mínima
+        if not exi_min.strip():
+            messagebox.showerror("Error", "La existencia mínima no puede estar vacía.")
+            return
+        if not exi_min.isdigit():
+            messagebox.showerror("Error", "La existencia mínima debe ser un número entero positivo.")
+            return
+        exi_min_int = int(exi_min)
+        if not (0 <= exi_min_int <= 65535):
+            messagebox.showerror("Error", "La existencia mínima debe estar entre 0 y 65535.")
+            return
+
+        # Validación del campo Existencia Maxima
+        if not exi_max.strip():
+            messagebox.showerror("Error", "La existencia máxima no puede estar vacía.")
+            return
+        if not exi_max.isdigit():
+            messagebox.showerror("Error", "La existencia máxima debe ser un número entero positivo.")
+            return
+        exi_max_int = int(exi_max)
+        if not (0 <= exi_max_int <= 65535):
+            messagebox.showerror("Error", "La existencia máxima debe estar entre 0 y 65535.")
+            return
+
+        # Validación del campo Cantidad Disponible
+        if not can_disp.strip():
+            messagebox.showerror("Error", "La cantidad disponible no puede estar vacía.")
+            return
+        if not can_disp.isdigit():
+            messagebox.showerror("Error", "La cantidad disponible debe ser un número.")
+            return
 
         if self.modo_formulario == "agregar":
-            success, error_message = self.controlador.agregar_insumo(id_ins,des_ins, id_uni, exi_min, exi_max, can_disp)
+            success, error_message = self.controlador.agregar_insumo(id_ins, des_ins, id_uni, exi_min, exi_max, can_disp)
             if success:
                 messagebox.showinfo("Éxito", "Insumo agregado con éxito.")
                 self.cargar_insumos()
@@ -196,6 +252,7 @@ class InsumosView(tk.Frame):
                 messagebox.showerror("Error", error_message)
 
         self.ocultar_formulario()
+
 
     def cargar_insumos(self):
         self.tree.delete(*self.tree.get_children())

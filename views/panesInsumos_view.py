@@ -14,6 +14,7 @@ class PanesInsumosView(tk.Frame):
         tk.Label(self, text="Panes - Insumos", bg="#EDE0D4", fg="#6D3914", font=("Arial", 16, "bold")).pack(pady=(15, 10), padx=15, anchor="w")
         self.create_crud_bar()
         self.create_table()
+        self.tree.pack_forget()
         self.create_formulario()
 
     def create_crud_bar(self):
@@ -88,6 +89,12 @@ class PanesInsumosView(tk.Frame):
         self.entries["Unidad de Medida"]["values"] = [f"{unidad['id_uni']} - {unidad['des_uni']}" for unidad in unidades]
 
     def handle_crud(self, action):
+        self.ocultar_formulario()
+        self.tree.pack_forget()
+
+        if action == "CONSULTAR":
+            self.tree.pack(fill=tk.BOTH, expand=True, padx=15, pady=10)
+
         if action == "AGREGAR":
             self.modo_formulario = "agregar"
             self.limpiar_formulario()
@@ -145,6 +152,23 @@ class PanesInsumosView(tk.Frame):
     def guardar_formulario(self):
         datos = {label: entry.get().split(" - ")[0] if " - " in entry.get() else entry.get() for label, entry in self.entries.items()}
         print("Datos enviados:", datos)
+        
+        # Validación del campo Cantidad
+        try:
+            cantidad = float(datos["Cantidad"])
+        except ValueError:
+            messagebox.showerror("Error", "La cantidad debe ser un número válido.")
+            return
+        if cantidad < 0:
+            messagebox.showerror("Error", "La cantidad no puede ser negativa.")
+            return
+        if cantidad > 999999999999999999.99:
+            messagebox.showerror("Error", "La cantidad excede el valor máximo permitido (999999999999999999.99).")
+            return
+        if round(cantidad, 2) != cantidad:
+            messagebox.showerror("Error", "La cantidad no puede tener más de dos decimales.")
+            return
+
         if self.modo_formulario == "agregar":
             success, error_message = self.controlador.agregar_pan_insumo(datos["ID Pan"], datos["ID Insumo"], datos["Cantidad"], datos["Unidad de Medida"])
             if success:
@@ -162,8 +186,6 @@ class PanesInsumosView(tk.Frame):
 
 
         self.ocultar_formulario()
-
-    
 
     def cargar_panes_insumos(self):
         self.tree.delete(*self.tree.get_children())

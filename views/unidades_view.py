@@ -13,6 +13,7 @@ class UnidadesView(tk.Frame):
         tk.Label(self, text="Unidades de Medida", bg="#EDE0D4", fg="#6D3914", font=("Arial", 16, "bold")).pack(pady=(15, 10), padx=15, anchor="w")
         self.create_crud_bar()
         self.create_table()
+        self.tree.pack_forget()
         self.create_formulario()
 
     def create_crud_bar(self):
@@ -60,6 +61,12 @@ class UnidadesView(tk.Frame):
         self.boton_guardar.grid(row=len(labels), column=0, columnspan=2, pady=10)
 
     def handle_crud(self, action):
+        self.ocultar_formulario()
+        self.tree.pack_forget()
+
+        if action == "CONSULTAR":
+            self.tree.pack(fill=tk.BOTH, expand=True, padx=15, pady=10)
+            
         if action == "AGREGAR":
             self.modo_formulario = "agregar"
             self.limpiar_formulario()
@@ -121,6 +128,17 @@ class UnidadesView(tk.Frame):
 
     def guardar_formulario(self):
         datos = [entry.get() for entry in self.entries.values()]
+
+        # Validación del campo Descripción
+        if not datos[1].strip():
+            messagebox.showerror("Error", "La descripción no puede estar vacía.")
+            return
+        if not all(c.isalpha() or c.isspace() for c in datos[1]):
+            messagebox.showerror("Error", "La descripción debe contener solo letras y espacios.")
+            return
+        if len(datos[1]) > 50:
+            messagebox.showerror("Error", "La descripción debe tener menos de 50 caracteres.")
+            return
 
         if self.modo_formulario == "agregar":
             id_unidad = datos[0]

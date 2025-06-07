@@ -1,4 +1,6 @@
 import tkinter as tk
+from PIL import Image, ImageTk
+from tkinter import messagebox
 from views.insumos_view import InsumosView
 from views.panes_view import PanesView
 from views.panesInsumos_view import PanesInsumosView
@@ -10,9 +12,15 @@ from controllers.panes_insumos_controller import PanesInsumosControlador
 class MainApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Panificadora Dulce Hogar")
+        self.root.title("Panificadora Vincenzo")
         self.root.geometry("1000x600")
         self.root.configure(bg="#EDE0D4")
+        self.root.resizable(False, False)
+
+        self.root.protocol("WM_DELETE_WINDOW", self.confirmar_salida)
+
+        self.background_label = None  
+        self.bg_image = None  
 
         self.setup_ui()
 
@@ -27,7 +35,18 @@ class MainApp:
         self.main_paned.add(self.content_frame)
 
         self.create_sidebar()
-        # self.load_view("insumos") TODO descomentar para cargar la vista insumos por defecto...
+        self.mostrar_imagen_fondo()
+
+    def mostrar_imagen_fondo(self):
+        try:
+            fondo = Image.open("fondo.jpg")  # Ruta relativa o absoluta de la imagen
+            fondo = fondo.resize((800, 600), Image.Resampling.LANCZOS)
+            self.bg_image = ImageTk.PhotoImage(fondo)
+
+            self.background_label = tk.Label(self.content_frame, image=self.bg_image)
+            self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        except Exception as e:
+            print("Error al cargar la imagen de fondo:", e)
 
     def create_sidebar(self):
         tk.Label(self.sidebar, text="🍞 Menú Principal", bg="#8B4A1A", fg="#EDE0D4", font=("Arial", 18, "bold"), pady=15).pack(fill=tk.X, pady=(0, 20))
@@ -45,14 +64,20 @@ class MainApp:
                       font=("Segoe UI Emoji", 14), anchor="w", padx=20, pady=10,
                       relief=tk.FLAT, bd=0).pack(fill=tk.X, pady=5)
             
-        tk.Button(self.sidebar, text="❌ Salir", command=self.root.quit,
+        tk.Button(self.sidebar, text="❌ Salir", command=self.confirmar_salida,
               bg="#6C3915", fg="#EDE0D4", activebackground="#B56A3A",
               font=("Segoe UI Emoji", 14), anchor="w", padx=20, pady=10,
               relief=tk.FLAT, bd=0).pack(side=tk.BOTTOM, fill=tk.X, pady=10)
+        
+    def confirmar_salida(self):
+        respuesta = messagebox.askyesno("Salir del programa", "¿Estás seguro que deseas salir?")
+        if respuesta:
+            self.root.quit()
+
 
     def load_view(self, view_name):
         for widget in self.content_frame.winfo_children():
-            widget.destroy()
+            widget.destroy()  # Quita la imagen o cualquier vista previa
 
         if view_name == "insumos":
             controlador = InsumoControlador(None)  

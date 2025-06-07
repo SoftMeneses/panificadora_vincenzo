@@ -15,6 +15,7 @@ class PanesView(tk.Frame):
         tk.Label(self, text="Panes", bg="#EDE0D4", fg="#6D3914", font=("Arial", 16, "bold")).pack(pady=(15, 10), padx=15, anchor="w")
         self.create_crud_bar()
         self.create_table()
+        self.tree.pack_forget()
         self.create_formulario()
 
     def create_crud_bar(self):
@@ -62,6 +63,12 @@ class PanesView(tk.Frame):
         self.boton_guardar.grid(row=len(labels), column=0, columnspan=2, pady=10)
 
     def handle_crud(self, action):
+        self.ocultar_formulario()
+        self.tree.pack_forget()
+
+        if action == "CONSULTAR":
+            self.tree.pack(fill=tk.BOTH, expand=True, padx=15, pady=10)
+
         print(f"Botón {action} presionado en PanesView")
         if action == "AGREGAR":
             self.modo_formulario = "agregar"
@@ -127,8 +134,15 @@ class PanesView(tk.Frame):
     def guardar_formulario(self):
         datos = [entry.get().strip() for entry in self.entries.values()]
 
-        if not datos[1]:
-            messagebox.showerror("Error", "La descripción del pan no puede estar vacía.")
+        # Validación del campo Descripción
+        if not datos[1].strip():
+            messagebox.showerror("Error", "La descripción no puede estar vacía.")
+            return
+        if not all(c.isalpha() or c.isspace() for c in datos[1]):
+            messagebox.showerror("Error", "La descripción debe contener solo letras y espacios.")
+            return
+        if len(datos[1]) > 50:
+            messagebox.showerror("Error", "La descripción debe tener menos de 50 caracteres.")
             return
 
         if self.modo_formulario == "agregar":
@@ -149,44 +163,6 @@ class PanesView(tk.Frame):
                 messagebox.showerror("Error", error_message)
 
         self.ocultar_formulario()
-
-    def handle_crud(self, action):
-        if action == "AGREGAR":
-            self.modo_formulario = "agregar"
-            self.limpiar_formulario()
-            
-            siguiente_id = self.controlador.obtener_siguiente_id_pan()
-            if siguiente_id is not None:
-                self.entries["ID Pan"].config(state="normal")
-                self.entries["ID Pan"].delete(0, tk.END)
-                self.entries["ID Pan"].insert(0, str(siguiente_id))
-                self.entries["ID Pan"].config(state="readonly")
-            else:
-                self.entries["ID Pan"].config(state="normal")
-                self.entries["ID Pan"].delete(0, tk.END)
-            self.mostrar_formulario()
-        elif action == "ACTUALIZAR":
-            seleccion = self.tree.selection()
-            if not seleccion:
-                messagebox.showwarning("Advertencia", "Debe seleccionar una fila para actualizar.")
-                return
-            self.modo_formulario = "actualizar"
-            self.rellenar_formulario_con_fila(seleccion[0])
-            self.entries["ID Pan"].config(state="readonly")
-            self.mostrar_formulario()
-        elif action == "ELIMINAR":
-            seleccion = self.tree.selection()
-            if not seleccion:
-                messagebox.showwarning("Advertencia", "Debe seleccionar una fila para eliminar.")
-                return
-            values = self.tree.item(seleccion[0], "values")
-            if messagebox.askyesno("Confirmar", f"¿Está seguro que desea eliminar el pan '{values[1]}'?"):
-                success, error_message = self.controlador.eliminar_pan(values[0])
-                if success:
-                    messagebox.showinfo("Éxito", "Pan eliminado con éxito.")
-                    self.controlador.cargar_panes()
-                else:
-                    messagebox.showerror("Error", error_message)
 
     def cargar_panes(self, panes):
         self.tree.delete(*self.tree.get_children())
