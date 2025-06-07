@@ -39,7 +39,7 @@ class PanesInsumosControlador:
             return False, "Datos inválidos: asegúrate de que todos los campos numéricos estén correctamente llenados."
 
         filas_afectadas = self.modelo.actualizar_pan_insumo(id_panins, id_pan, id_ins, can_ins, id_uni)
-        if filas_afectadas > 0:
+        if filas_afectadas >= 0:
             print(f"Pan-Insumo con ID {id_panins} actualizado.")
             return True, None 
         else:
