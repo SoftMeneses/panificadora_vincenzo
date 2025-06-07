@@ -24,7 +24,7 @@ class InsumoControlador:
 
     def actualizar_insumo(self, id_ins, des_ins, id_uni, exi_min, exi_max, can_disp):
         filas_afectadas = self.modelo.actualizar_insumo(id_ins, des_ins, id_uni, exi_min, exi_max, can_disp)
-        if filas_afectadas > 0:
+        if filas_afectadas >= 0:
             print(f"Insumo con ID {id_ins} actualizado.")
             return True, None
         else:
