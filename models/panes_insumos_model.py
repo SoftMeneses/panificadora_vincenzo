@@ -8,7 +8,7 @@ class PanInsumoModelo:
     def obtener_panes_insumos(self):
 
         cursor = self.conexion.cursor(dictionary=True)
-        cursor.execute("SELECT id_panins, des_pan AS id_pan, des_ins AS id_ins, can_ins, des_uni AS id_uni FROM panes_insumos INNER JOIN panes ON panes_insumos.ID_PAN = PANES.id_pan INNER JOIN INSUMOS ON insumos.id_ins = panes_insumos.id_ins INNER JOIN unidades ON unidades.id_uni = panes_insumos.id_uni")
+        cursor.execute("SELECT id_panins,CONCAT(panes_insumos.id_pan,' - ',des_pan) AS id_pan, CONCAT(insumos.id_ins,' - ', des_ins) AS id_ins, can_ins, CONCAT(unidades.id_uni,' - ',des_uni) AS id_uni FROM panes_insumos INNER JOIN panes ON panes_insumos.ID_PAN = PANES.id_pan INNER JOIN INSUMOS ON insumos.id_ins = panes_insumos.id_ins INNER JOIN unidades ON unidades.id_uni = panes_insumos.id_uni ORDER BY ID_PANINS")
         panes_insumos = cursor.fetchall()
         cursor.close()
         return panes_insumos
