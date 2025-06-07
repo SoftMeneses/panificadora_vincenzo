@@ -142,12 +142,30 @@ class PanesInsumosView(tk.Frame):
             entry.delete(0, tk.END)
 
     def rellenar_formulario_con_fila(self, item_id):
-        valores = self.tree.item(item_id, "values")
-        for (entry, valor) in zip(self.entries.values(), valores):
-            entry.config(state='normal')
-            entry.delete(0, tk.END)
-            entry.insert(0, valor)
-        self.fila_seleccionada = item_id
+        datos_completos = self.tree_data.get(item_id)
+        if not datos_completos:
+            messagebox.showerror("Error", "No se encontraron los datos completos del registro.")
+            return
+
+        # Rellenar los campos de texto
+        self.entries["ID Registro"].config(state='normal')
+        self.entries["ID Registro"].delete(0, tk.END)
+        self.entries["ID Registro"].insert(0, str(datos_completos["id_panins"]))
+        self.entries["ID Registro"].config(state='readonly')
+
+        self.entries["Cantidad"].config(state='normal')
+        self.entries["Cantidad"].delete(0, tk.END)
+        self.entries["Cantidad"].insert(0, str(datos_completos["can_ins"]))
+
+        # Establecer valores completos ("ID - Descripción") en los Combobox
+        for key, label in [("id_pan", "ID Pan"), ("id_ins", "ID Insumo"), ("id_uni", "Unidad de Medida")]:
+            full_value = datos_completos.get(key)
+            if full_value and full_value in self.entries[label]["values"]:
+                self.entries[label].set(full_value)
+            else:
+                # fallback por si no encuentra el full_value exacto
+                self.entries[label].current(0)
+
 
     def guardar_formulario(self):
         datos = {label: entry.get().split(" - ")[0] if " - " in entry.get() else entry.get() for label, entry in self.entries.items()}
@@ -190,11 +208,31 @@ class PanesInsumosView(tk.Frame):
     def cargar_panes_insumos(self):
         self.tree.delete(*self.tree.get_children())
         panes_insumos = self.controlador.cargar_panes_insumos()
-        for registro in panes_insumos:
-            self.tree.insert("", "end", values=(
+        self.tree_data = {}  # Diccionario para guardar datos completos con iid
+
+        for i, registro in enumerate(panes_insumos):
+            iid = f"item_{i}"
+            # Extraer solo las descripciones para mostrar
+            desc_pan = registro.get("id_pan").split(" - ")[1]
+            desc_ins = registro.get("id_ins").split(" - ")[1]
+            desc_uni = registro.get("id_uni").split(" - ")[1]
+
+            # Guardar datos completos en el diccionario con iid
+            self.tree_data[iid] = {
+                "id_pan": registro.get("id_pan"),
+                "id_ins": registro.get("id_ins"),
+                "id_uni": registro.get("id_uni"),
+                "id_panins": registro.get("id_panins"),
+                "can_ins": registro.get("can_ins")
+            }
+
+            # Insertar en Treeview solo las descripciones
+            self.tree.insert("", "end", iid=iid, values=(
                 registro.get("id_panins"),
-                registro.get("id_pan"),
-                registro.get("id_ins"),
+                desc_pan,
+                desc_ins,
                 registro.get("can_ins"),
-                registro.get("id_uni")
+                desc_uni
             ))
+
+
