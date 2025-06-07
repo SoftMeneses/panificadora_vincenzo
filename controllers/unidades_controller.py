@@ -24,7 +24,7 @@ class UnidadControlador:
 
     def actualizar_unidad(self, id_uni, des_uni):
         filas_afectadas = self.modelo.actualizar_unidad(id_uni, des_uni)
-        if filas_afectadas > 0:
+        if filas_afectadas >= 0:
             print(f"Unidad con ID {id_uni} actualizada.")
             return True, None
         else:
