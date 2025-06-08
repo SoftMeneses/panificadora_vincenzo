@@ -211,6 +211,9 @@ class InsumosView(tk.Frame):
         if not exi_min.isdigit():
             messagebox.showerror("Error", "La existencia mínima debe ser un número entero positivo.")
             return
+        if int(exi_min) > int(exi_max):
+            messagebox.showerror("Error", "La existencia mínima debe ser menor o igual a la existencia máxima.")
+            return
         exi_min_int = int(exi_min)
         if not (0 <= exi_min_int <= 65535):
             messagebox.showerror("Error", "La existencia mínima debe estar entre 0 y 65535.")
@@ -223,6 +226,9 @@ class InsumosView(tk.Frame):
         if not exi_max.isdigit():
             messagebox.showerror("Error", "La existencia máxima debe ser un número entero positivo.")
             return
+        if int(exi_max) < int(exi_min):
+            messagebox.showerror("Error", "La existencia máxima debe ser mayor o igual a la existencia mínima.")
+            return
         exi_max_int = int(exi_max)
         if not (0 <= exi_max_int <= 65535):
             messagebox.showerror("Error", "La existencia máxima debe estar entre 0 y 65535.")
@@ -233,7 +239,13 @@ class InsumosView(tk.Frame):
             messagebox.showerror("Error", "La cantidad disponible no puede estar vacía.")
             return
         if not can_disp.isdigit():
-            messagebox.showerror("Error", "La cantidad disponible debe ser un número.")
+            messagebox.showerror("Error", "La cantidad disponible debe ser un número positivo.")
+            return
+        if int(can_disp) < int(exi_min):
+            messagebox.showerror("Error", "La cantidad disponible debe ser mayor o igual a la existencia mínima.")
+            return
+        if int(can_disp) > int(exi_max):
+            messagebox.showerror("Error", "La cantidad disponible debe ser menor o igual a la existencia máxima.")
             return
 
         if self.modo_formulario == "agregar":

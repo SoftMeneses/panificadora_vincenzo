@@ -7,7 +7,7 @@ class InsumoModelo:
 
     def obtener_insumos(self):
         cursor = self.conexion.cursor(dictionary=True)
-        cursor.execute("SELECT id_ins, des_ins, des_uni AS id_uni, exi_min, exi_max, can_disp FROM insumos INNER JOIN unidades ON insumos.id_uni = unidades.id_uni ")
+        cursor.execute("SELECT id_ins, des_ins, des_uni AS id_uni, exi_min, exi_max, can_disp FROM insumos INNER JOIN unidades ON insumos.id_uni = unidades.id_uni ORDER BY id_ins")
         insumos = cursor.fetchall()
         cursor.close()
         return insumos
