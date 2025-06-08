@@ -24,11 +24,11 @@ class PanModelo:
             print(f"Error al obtener el siguiente ID: {e}")
             return None
 
-    def insertar_pan(self, id_pan, descr_pan):
+    def insertar_pan(self, id_pan, des_pan):
         try:
             cursor = self.conexion.cursor()
-            sql = "INSERT INTO panes (id_pan, descr_pan) VALUES(%s, %s)"
-            cursor.execute(sql, (id_pan, descr_pan))
+            sql = "INSERT INTO panes (id_pan, des_pan) VALUES(%s, %s)"
+            cursor.execute(sql, (id_pan, des_pan))
             self.conexion.commit()
             cursor.close()
             return cursor.lastrowid
@@ -36,11 +36,11 @@ class PanModelo:
             print(f"Error al insertar pan: {e}")
             return str(e)  
 
-    def actualizar_pan(self, id_pan, descr_pan):
+    def actualizar_pan(self, id_pan, des_pan):
         try:
             cursor = self.conexion.cursor()
-            sql = "UPDATE panes SET descr_pan = %s WHERE id_pan = %s"
-            cursor.execute(sql, (descr_pan, id_pan))
+            sql = "UPDATE panes SET des_pan = %s WHERE id_pan = %s"
+            cursor.execute(sql, (des_pan, id_pan))
             self.conexion.commit()
             filas_afectadas = cursor.rowcount
             cursor.close()
