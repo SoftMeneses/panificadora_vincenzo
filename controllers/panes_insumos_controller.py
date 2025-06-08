@@ -18,9 +18,9 @@ class PanesInsumosControlador:
         max_id = resultado[0] if resultado[0] is not None else 0
         return max_id + 1
 
-    def agregar_pan_insumo(self, id_pan, id_ins, can_ins, id_uni):
+    def agregar_pan_insumo(self,id_panins, id_pan, id_ins, can_ins, id_uni):
 
-        nuevo_id = self.modelo.insertar_pan_insumo(id_pan, id_ins, can_ins, id_uni)
+        nuevo_id = self.modelo.insertar_pan_insumo(id_panins,id_pan, id_ins, can_ins, id_uni)
         if isinstance(nuevo_id, int):
             print(f"Pan-Insumo agregado con ID: {nuevo_id}")
             return True, None  
