@@ -13,12 +13,12 @@ class PanInsumoModelo:
         cursor.close()
         return panes_insumos
     
-    def insertar_pan_insumo(self, id_pan, id_ins, can_ins, id_uni):
+    def insertar_pan_insumo(self,id_panins, id_pan, id_ins, can_ins, id_uni):
     
         try:
             cursor = self.conexion.cursor()
-            sql = "INSERT INTO panes_insumos (id_pan, id_ins, can_ins, id_uni) VALUES(%s, %s, %s, %s)"
-            cursor.execute(sql, (id_pan, id_ins, can_ins, id_uni))
+            sql = "INSERT INTO panes_insumos (id_panins,id_pan, id_ins, can_ins, id_uni) VALUES(%s,%s, %s, %s, %s)"
+            cursor.execute(sql, (id_panins,id_pan, id_ins, can_ins, id_uni))
             self.conexion.commit()
             cursor.close()
             return cursor.lastrowid 
