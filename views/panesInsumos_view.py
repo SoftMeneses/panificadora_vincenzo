@@ -188,7 +188,7 @@ class PanesInsumosView(tk.Frame):
             return
 
         if self.modo_formulario == "agregar":
-            success, error_message = self.controlador.agregar_pan_insumo(datos["ID Pan"], datos["ID Insumo"], datos["Cantidad"], datos["Unidad de Medida"])
+            success, error_message = self.controlador.agregar_pan_insumo(datos["ID Registro"],datos["ID Pan"], datos["ID Insumo"], datos["Cantidad"], datos["Unidad de Medida"])
             if success:
                 messagebox.showinfo("Éxito", "Registro agregado con éxito.")
                 self.cargar_panes_insumos()
